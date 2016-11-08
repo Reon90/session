@@ -166,26 +166,9 @@ function session(options) {
 
   var storeImplementsTouch = typeof store.touch === 'function';
 
-  // register event listeners for the store to track readiness
-  var storeReady = true
-  store.on('disconnect', function ondisconnect() {
-    storeReady = false
-  })
-  store.on('connect', function onconnect() {
-    storeReady = true
-  })
-
   return function session(req, res, next) {
     // self-awareness
     if (req.session) {
-      next()
-      return
-    }
-
-    // Handle connection as if there is no session if
-    // the store has temporarily disconnected etc
-    if (!storeReady) {
-      debug('store is disconnected')
       next()
       return
     }
